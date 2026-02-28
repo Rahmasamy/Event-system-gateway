@@ -4,8 +4,8 @@
   "description": "High-concurrency async event gateway for Fincart logistics",
   "main": "src/app.js",
   "scripts": {
-    "start": "node src/app.js",
-    "dev": "nodemon src/app.js",
+    "start": "node api.js && node src/app.js",
+    "dev": "node api.js && nodemon src/app.js",
     "worker": "node src/queue/worker.js",
     "test:load": "node scripts/load-test.js"
   },
