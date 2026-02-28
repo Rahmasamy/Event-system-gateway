@@ -1,7 +1,7 @@
 "use strict";
 
 
-const logger = require("../../logs/logger");
+const logger = require("../../config/logger");
 const {
   enqueueEvent,
   getQueueMetrics,

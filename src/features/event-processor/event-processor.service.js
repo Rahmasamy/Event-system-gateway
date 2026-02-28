@@ -8,7 +8,7 @@ const {
   recordProcessedEvent,
 } = require("../shippment/shipment.service");
 const { callRoutingService, RoutingServiceError } = require("../../services/routing.service");
-const logger = require("../../logs/logger");
+const logger = require("../../config/logger");
 
 
 

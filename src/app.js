@@ -27,7 +27,7 @@ const { connectMongo, closeMongo } = require("./db/mongo");
 const { getRedisClient, closeRedisClient } = require("./db/redis");
 const eventsRouter = require("./features/events/events.route");
 const config = require("./config");
-const logger = require("./logs/logger");
+const logger = require("./config/logger");
 const { warmupQueue } = require("./queue/queue");
 
 const app = express();

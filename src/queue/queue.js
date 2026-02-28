@@ -1,5 +1,5 @@
 const { Queue, QueueEvents } = require("bullmq");
-const logger = require("../logs/logger");
+const logger = require("../config/logger");
 const { createRedisClient, createBullMQConnection } = require("../db/redis");
 const config = require("../config");
 

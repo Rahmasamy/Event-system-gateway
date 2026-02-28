@@ -132,21 +132,7 @@ async function runLoadTest() {
   console.log(`  Target: ${CONFIG.totalRequests} concurrent requests`);
   console.log(`  Endpoint: http://${CONFIG.host}:${CONFIG.port}/api/events`);
   console.log("════════════════════════════════════════════════════════════\n");
-  console.log("Warming up connections...");
-  
-  
-  const warmupPayload = buildEventPayload(9999);
-  const warmupBody = JSON.stringify(warmupPayload);
-  await Promise.all([
-    sendRequest(buildEventPayload(9997), 9997),
-    sendRequest(buildEventPayload(9998), 9998),
-    sendRequest(buildEventPayload(9999), 9999),
-  ]);
-  
-  
-  await new Promise(r => setTimeout(r, 500));
-  
-  console.log("Warmup done. Starting real test...\n");
+  console.log("Starting load test...\n");
   const payloads = Array.from({ length: CONFIG.totalRequests }, (_, i) =>
     buildEventPayload(i)
   );

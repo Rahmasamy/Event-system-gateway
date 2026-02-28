@@ -1,7 +1,7 @@
 require("dotenv").config();
 
 const config = require("../config");
-const logger = require("../logs/logger");
+const logger = require("../config/logger");
 const { Worker } = require("bullmq");
 const { createRedisClient, createBullMQConnection } = require("../db/redis");
 const { connectMongo } = require("../db/mongo");

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const config = require("../config");
-const logger = require("../logs/logger");
+const logger = require("../config/logger");
 const { Shipment } = require("../models/Shipment");
 const { ProcessedEvent } = require("../models/ProcessEvents");
 const { DLQEvent } = require("../models/DLQ");

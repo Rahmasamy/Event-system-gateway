@@ -1,5 +1,5 @@
 const config = require("../../config");
-const logger = require("../../logs/logger");
+const logger = require("../../config/logger");
 const { getRedisClient } = require("../../db/redis");
 
 function extractEventId(req) {

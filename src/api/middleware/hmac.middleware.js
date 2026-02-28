@@ -1,7 +1,7 @@
 const crypto = require("crypto");
 const config = require("../../config");
 const { SIGNATURE_HEADER, SIGNATURE_PREFIX } = require("../../consts/HmacSignature");
-const logger = require("../../logs/logger");
+const logger = require("../../config/logger");
 
 function validateHmacSignature(req, res, next) {
   const signature = req.headers[SIGNATURE_HEADER];

@@ -1,6 +1,6 @@
 const { default: IORedis } = require("ioredis");
 const config = require("../config");
-const logger = require("../logs/logger");
+const logger = require("../config/logger");
 
 function createRedisClient(name = "default") {
   const client = new IORedis({

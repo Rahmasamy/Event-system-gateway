@@ -1,7 +1,7 @@
 const { Worker } = require("bullmq");
 const { createRedisClient } = require("../db/redis");
 const { enqueueEvent } = require("./queue");
-const logger = require("../logs/logger");
+const logger = require("../config/logger");
 const config = require("../config");
 const { DLQEvent } = require("../models/DLQ");
 

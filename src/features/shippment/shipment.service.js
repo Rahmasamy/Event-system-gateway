@@ -1,6 +1,6 @@
 "use strict";
 
-const logger = require("../../logs/logger");
+const logger = require("../../config/logger");
 const { ProcessedEvent } = require("../../models/ProcessEvents");
 const { Shipment } = require("../../models/Shipment");
 
