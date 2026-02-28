@@ -1,0 +1,101 @@
+version: "3.9"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# FINCART RESILIENT EVENT GATEWAY — Docker Compose
+#
+# Services:
+#   app     → Express ingestion layer (port 3000)
+#   worker  → BullMQ background worker (same codebase, different entry)
+#   redis   → Job queue + idempotency store
+#   mongo   → Persistent shipment/event store
+#
+# Start everything: docker compose up --build
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+  # ── Redis ──────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7.2-alpine
+    container_name: fincart_redis
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
+    # Persistence: AOF (Append Only File) ensures no jobs are lost on restart
+    # Additional flags optimize for local Docker network performance
+    command: redis-server --appendonly yes --appendfsync everysec --tcp-backlog 511 --timeout 0 --tcp-keepalive 300
+    sysctls:
+      - net.core.somaxconn=511
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── MongoDB ─────────────────────────────────────────────────────────────────
+  mongo:
+    image: mongo:7.0
+    container_name: fincart_mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+      # Seed script runs once on first startup to create indexes + sample data
+      - ./scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    environment:
+      MONGO_INITDB_DATABASE: fincart_gateway
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Express App (Ingestion Layer) ───────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fincart_app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file: .env
+    environment:
+      REDIS_HOST: redis
+      MONGO_URI: mongodb://mongo:27017/fincart_gateway
+    depends_on:
+      redis:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+    command: node src/app.js
+    volumes:
+      - ./logs:/app/logs
+
+  # ── BullMQ Worker (Processing Layer) ───────────────────────────────────────
+  # Runs as a SEPARATE process — this is the key architectural decision.
+  # The worker can be scaled independently: docker compose up --scale worker=3
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fincart_worker
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      REDIS_HOST: redis
+      MONGO_URI: mongodb://mongo:27017/fincart_gateway
+    depends_on:
+      redis:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+    command: node src/queue/worker.js
+    volumes:
+      - ./logs:/app/logs
+
+volumes:
+  redis_data:
+  mongo_data:

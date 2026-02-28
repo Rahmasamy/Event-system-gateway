@@ -1,0 +1,24 @@
+{
+  "name": "fincart-resilient-gateway",
+  "version": "1.0.0",
+  "description": "High-concurrency async event gateway for Fincart logistics",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "worker": "node src/queue/worker.js",
+    "test:load": "node scripts/load-test.js"
+  },
+  "dependencies": {
+    "bullmq": "^5.4.2",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.3",
+    "ioredis": "^5.3.2",
+    "mongoose": "^8.2.3",
+    "winston": "^3.13.0",
+    "winston-mongodb": "^5.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
